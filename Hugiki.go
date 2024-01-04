@@ -11,7 +11,9 @@ import (
     "github.com/gookit/config/v2/yaml"
 )
 
-const hugikiTag = "<hugiki/>"
+const hugikiStartTag = "<hugiki>"
+const hugikiEndTag = "</hugiki>"
+const loadHtmxHtml = `<script src="https://unpkg.com/htmx.org@1.9.10"></script>`
 
 var backendBaseUrl string
 var hugoProject string
@@ -48,16 +50,6 @@ func getConfig() {
 }
 
 
-/*
- * 
- */
-
-
-
-func hugikiHandler(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w,"Welcome to the hugikiHandler")
-
-}
 
 /*
  * Proxy logic
@@ -121,20 +113,45 @@ func ensureSameContentType(backendResp *http.Response, w http.ResponseWriter) {
     w.Header().Set("Content-Type",oldContentTyp)
 }
 
-func replaceHugikiTag(htmlInput string) string {
-	return htmlInput
+func insertWorkareaHtml(htmlInput string,frontendReq *http.Request) string {
+	workarea := `
+	<h3>edit<h3></br>	
+	<h3>create sibling page<h3></br>
+	<h3>create child page<h3>
+	`
+
+	rexp   := regexp.MustCompile(hugikiEndTag)
+	result := rexp.ReplaceAllString(htmlInput,hugikiEndTag+workarea)		
+	
+	return result
 }
 
-func makeHugikiHtml (htmlInput string) string {
-	matchHugikiTag, _ := regexp.MatchString(hugikiTag, htmlInput)
-	var result string
-	if ! matchHugikiTag {
-		body := "</body>"
-		rexp := regexp.MustCompile(body)
-		result = rexp.ReplaceAllString(htmlInput,hugikiTag+body)
-		fmt.Println(result)
+// <body>...</body> -> <body><hugiki>...</hugiki><body>
+func makeHugikiHtml (htmlInput string,frontendReq *http.Request) string {
+	//bodyStartTag    := "<body>"
+	bodyStartTagRXP := "<body.*>\n"
+	bodyEndTag      := "</body>"
+
+	result1 := htmlInput
+	matchHugikiStartTag, _ := regexp.MatchString(hugikiStartTag, htmlInput)
+	if ! matchHugikiStartTag {
+		rexp1 := regexp.MustCompile(bodyStartTagRXP)
+		matchedBodyStartTag := rexp1.FindString(htmlInput)
+		fmt.Println("matchBodyStartTag:"+matchedBodyStartTag)
+		
+		rexp2 := regexp.MustCompile(bodyStartTagRXP)
+		result1 = rexp2.ReplaceAllString(htmlInput,matchedBodyStartTag+loadHtmxHtml+hugikiStartTag)
+		//fmt.Println(result1)
 	}
-	return replaceHugikiTag(result)
+
+	result2 := result1
+	matchHugikiEndTag, _ := regexp.MatchString(hugikiEndTag, result1)
+	if ! matchHugikiEndTag {
+		rexp := regexp.MustCompile(bodyEndTag)
+		result2 = rexp.ReplaceAllString(result1,hugikiEndTag+bodyEndTag)
+		//fmt.Println(result2)
+	}
+	return insertWorkareaHtml(result2,frontendReq)
 }
 
 
@@ -163,7 +180,7 @@ func pipeText(backendResp *http.Response, w http.ResponseWriter, frontendReq *ht
 	
 	bodystring := string(responseBytes) // Convert bytes to string
 	if isHtmlResponse(backendResp) {
-		bodystring = makeHugikiHtml(bodystring)
+		bodystring = makeHugikiHtml(bodystring,frontendReq)
 	}
 
 	//fmt.Println(bodystring)
@@ -200,14 +217,53 @@ func pipeThroughHandler(w http.ResponseWriter, frontendReq *http.Request) {
 
 }
 
+/*
+ * 
+ */
+
+
+
+func startAndEditHandler(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w,"Welcome to the startAndEditHandler")
+}
+
+func editAndUpdateHandler(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w,"Welcome to the editAndUpdateHandler")
+}
+
+func saveAndCloseHandler(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w,"Welcome to the saveAndCloseHandler")
+}
+
+func createChildPageHandler(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w,"Welcome to the createChildPageHandler")
+}
+
+func createChildPageCommitHandler(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w,"Welcome to the createChildPageCommitHandler")
+}
+
+func createSiblingPageHandler(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w,"Welcome to the createSiblingPageHandler")
+}
+
+func createChildPageCommithugikiHandler(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintln(w,"Welcome to the createChildPageCommithugikiHandler")
+}
 
 func main() {
 	getConfig()
 	
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("/hugiki/", hugikiHandler)
 	mux.HandleFunc("/", pipeThroughHandler)
+	mux.HandleFunc("/hugiki/start-and-edit/", startAndEditHandler)
+	mux.HandleFunc("/hugiki/edit-and-update/", editAndUpdateHandler)
+	mux.HandleFunc("/hugiki/save-and-close/", saveAndCloseHandler)
+	mux.HandleFunc("/hugiki/create-child-page/", createChildPageHandler)
+	mux.HandleFunc("/hugiki/create-child-page-commit/", createChildPageCommitHandler)
+	mux.HandleFunc("/hugiki/create-sibling-page/", createSiblingPageHandler)
+	mux.HandleFunc("/hugiki/create-sibling-page-commit/", createChildPageCommithugikiHandler)
 	
 	http.ListenAndServe(":3000", mux)	
 }
