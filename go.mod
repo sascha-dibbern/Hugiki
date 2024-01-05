@@ -19,3 +19,9 @@ require (
 	golang.org/x/text v0.14.0 // indirect
 	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 )
+
+replace github.com/sascha-dibbern/Hugiki/hiproxy => ../hiproxy
+
+replace github.com/sascha-dibbern/Hugiki/hihandlers => ../hihandlers
+
+replace github.com/sascha-dibbern/Hugiki/htmx => ../htmx
