@@ -14,6 +14,7 @@ type AppConfigType struct {
 	dev            bool
 	backendBaseUrl string
 	hugoProject    string
+	gitCommand     string
 }
 
 func assertConfigItemExistence(key string) {
@@ -54,15 +55,28 @@ func NewAppConfig() AppConfigType {
 		dev,
 		backendBaseUrl,
 		hugoProject,
+		"git",
 	}
 }
 
+func ensureLastSlash(text string) string {
+	lastchar := text[len(text)-1:]
+	if lastchar != "/" {
+		return text + "/"
+	}
+	return text
+}
+
 func (appconfig AppConfigType) BackendBaseUrl() string {
-	return appconfig.backendBaseUrl
+	return ensureLastSlash(appconfig.backendBaseUrl)
 }
 
 func (appconfig AppConfigType) HugoProject() string {
-	return appconfig.hugoProject + "/"
+	return ensureLastSlash(appconfig.hugoProject)
+}
+
+func (appconfig AppConfigType) GitCommand() string {
+	return appconfig.gitCommand
 }
 
 // AppConfig singleton
