@@ -2,28 +2,18 @@ package hiview
 
 import (
 	"fmt"
-	"regexp"
 
+	converthtml "github.com/sascha-dibbern/Hugiki/hiconverters/html"
 	"github.com/sascha-dibbern/Hugiki/himodel"
 	"github.com/sascha-dibbern/Hugiki/hiproxy"
 )
-
-const upWithBodyStartTagRXPS = ".*<body.*>"
-
-var upWithBodyStartTagRegexp = regexp.MustCompile(upWithBodyStartTagRXPS)
-
-const fromWithBodyEndTagRXPS = "</body>.*"
-
-var fromWithBodyEndTagRegexp = regexp.MustCompile(fromWithBodyEndTagRXPS)
 
 // ...<body...>xyz</body>... -> xyz
 type ContentPageBodyGenerator struct {
 }
 
 func (generator ContentPageBodyGenerator) GenerateHtml(htmlInput string, context *hiproxy.ProxyContext) string {
-	clean_in_start := upWithBodyStartTagRegexp.ReplaceAllString(htmlInput, "")
-	clean_also_after_end := fromWithBodyEndTagRegexp.ReplaceAllString(clean_in_start, "")
-	return clean_also_after_end
+	return converthtml.ExtractBodycontent(htmlInput)
 }
 
 func Render_EditContentText(contenttext string, localhugopath string) string {
@@ -37,12 +27,6 @@ func Render_EditContentText(contenttext string, localhugopath string) string {
 }
 
 func render_FileGitDiff(filepath string) string {
-	gitdiff := newlineToLinebreakString(himodel.GitDiff(filepath))
-
-	return gitdiff
-}
-
-func newlineToLinebreakString(s string) string {
-	re := regexp.MustCompile(`\r?\n+`)
-	return re.ReplaceAllString(s, "<br/>\n")
+	gitdiff := himodel.GitDiff(filepath)
+	return converthtml.NewlineToLinebreakString(gitdiff)
 }
