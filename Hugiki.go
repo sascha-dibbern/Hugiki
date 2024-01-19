@@ -1,11 +1,12 @@
 package main
 
 import (
-//    "fmt"
+	//    "fmt"
+	"bytes"
+	"io"
 	"net/http"
-    "bytes"
-    "io"
-//	"regexp"
+
+	//	"regexp"
 	"github.com/sascha-dibbern/Hugiki/hihandlers"
 )
 
@@ -19,5 +20,5 @@ func StreamToString(stream io.Reader) string {
 func main() {
 	mux := http.NewServeMux()
 	hihandlers.Setup(mux)
-	http.ListenAndServe(":3000", mux)	
+	http.ListenAndServe(":3000", mux)
 }

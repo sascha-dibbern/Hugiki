@@ -1,11 +1,11 @@
-package htmx
+package hiview
 
 import (
 	"fmt"
 	"net/http"
 	"regexp"
 
-	"github.com/sascha-dibbern/Hugiki/appconfig"
+	"github.com/sascha-dibbern/Hugiki/hiconfig"
 	"github.com/sascha-dibbern/Hugiki/himodel"
 	"github.com/sascha-dibbern/Hugiki/hiproxy"
 )
@@ -20,7 +20,7 @@ var Filepath_From_UriAction_UpdateContent_Regexp = regexp.MustCompile(UriAction_
 var UriPage_EditContentRegexp = regexp.MustCompile(UriPage_EditContent)
 var UriAction_ProxyContentPageBodyRegexp = regexp.MustCompile(UriAction_ProxyContentPageBody)
 
-const loadHtmxHtml = `<script src="https://unpkg.com/htmx.org@1.9.10"></script>`
+const loadhiviewHtml = `<script src="https://unpkg.com/htmx.org@1.9.10"></script>`
 
 const bodyStartTagRXPS = "<body.*>\n"
 
@@ -75,7 +75,7 @@ func (generator EditContentPageGenerator) GenerateHtml(htmlInput string, context
 			%s %s
 			<!--Content polling area -->
 			<div hx-get="%s" hx-trigger="every 1s">
-		`, matchedbodystart, loadHtmxHtml, pollingUrl),
+		`, matchedbodystart, loadhiviewHtml, pollingUrl),
 	)
 
 	modifiedcontrolareastring := bodyEndTagRegexp.ReplaceAllString(
@@ -111,7 +111,7 @@ func (generator EditContentPageGenerator) GenerateHtml(htmlInput string, context
  */
 
 func MakeHugikiWorkpageHtml(htmlInput string, request *http.Request) string {
-	backendBaseUrl := appconfig.AppConfig().BackendBaseUrl()
+	backendBaseUrl := hiconfig.AppConfig().BackendBaseUrl()
 	pollingUrl := backendBaseUrl + request.URL.RequestURI()
 
 	bodyStartTagRXP := "<body.*>\n"
@@ -119,7 +119,7 @@ func MakeHugikiWorkpageHtml(htmlInput string, request *http.Request) string {
 
 	rexp1 := regexp.MustCompile(bodyStartTagRXP)
 	matched := rexp1.FindString(htmlInput)
-	result1 := rexp1.ReplaceAllString(htmlInput, matched+loadHtmxHtml+"<!--Content polling area --><div hx-get=\""+pollingUrl+"\" hx-trigger=\"every 1s\">")
+	result1 := rexp1.ReplaceAllString(htmlInput, matched+loadhiviewHtml+"<!--Content polling area --><div hx-get=\""+pollingUrl+"\" hx-trigger=\"every 1s\">")
 
 	rexp2 := regexp.MustCompile(bodyEndTag)
 	result2 := rexp2.ReplaceAllString(result1, "</div><!-- Hugiki control area --><div>")

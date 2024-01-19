@@ -8,8 +8,7 @@ import (
 
 	"golang.org/x/text/encoding/charmap"
 	//	 "github.com/gookit/config/v2"
-	"github.com/sascha-dibbern/Hugiki/appconfig"
-	//		"github.com/sascha-dibbern/Hugiki/htmx"
+	"github.com/sascha-dibbern/Hugiki/hiconfig"
 )
 
 type TextConversionRule interface {
@@ -56,7 +55,7 @@ type hugoToHugikiUrlRule struct {
 }
 
 func HugoToHugikiUrlRule(matching_uri string, replacement_uri string) hugoToHugikiUrlRule {
-	matching_url := appconfig.AppConfig().BackendBaseUrl() + matching_uri
+	matching_url := hiconfig.AppConfig().BackendBaseUrl() + matching_uri
 	replacement_url := replacement_uri
 	return hugoToHugikiUrlRule{
 		NewTextConversionRuleDefinition(matching_url, replacement_url),
@@ -91,7 +90,7 @@ type hugikiUriToHugoUrlRule struct {
 }
 
 func HugikiUriToHugoUrlRule(hugiki_uri string, hugo_replacement_uri string) hugikiUriToHugoUrlRule {
-	replacement_url := appconfig.AppConfig().BackendBaseUrl() + "/" + hugo_replacement_uri
+	replacement_url := hiconfig.AppConfig().BackendBaseUrl() + "/" + hugo_replacement_uri
 	return hugikiUriToHugoUrlRule{
 		NewTextConversionRuleDefinition(hugiki_uri, replacement_url),
 	}
@@ -225,7 +224,7 @@ func (manip TextResponseManipulator) pipe() string {
 
 	textstring := string(responsebytes) // Convert bytes to string
 	if isHtmlResponse(contenttype) {
-		//textstring = htmx.MakeHugikiWorkpageHtml(textstring,context.Request)
+		//textstring = hiview.MakeHugikiWorkpageHtml(textstring,context.Request)
 		proxypagegenerator := context.proxypagegenerator
 		textstring = proxypagegenerator.GenerateHtml(textstring, context)
 	}

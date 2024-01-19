@@ -1,4 +1,4 @@
-package htmx
+package hiview
 
 import (
 	"fmt"

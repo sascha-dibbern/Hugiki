@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/sascha-dibbern/Hugiki/appconfig"
+	"github.com/sascha-dibbern/Hugiki/hiconfig"
 	"github.com/sascha-dibbern/Hugiki/himodel"
 	"github.com/sascha-dibbern/Hugiki/hiproxy"
-	"github.com/sascha-dibbern/Hugiki/htmx"
+	"github.com/sascha-dibbern/Hugiki/hiview"
 )
 
-const uriPage_EditContent = htmx.UriPage_EditContent
-const uriAction_ProxyContentPageBody = htmx.UriAction_ProxyContentPageBody
-const uriAction_UpdateContent = htmx.UriAction_UpdateContent
+const uriPage_EditContent = hiview.UriPage_EditContent
+const uriAction_ProxyContentPageBody = hiview.UriAction_ProxyContentPageBody
+const uriAction_UpdateContent = hiview.UriAction_UpdateContent
 
 func Setup(mux *http.ServeMux) {
 	mux.HandleFunc("/", pipeThroughHandler)
@@ -32,14 +32,14 @@ type DirectRequestManipulator struct {
 }
 
 func (manip DirectRequestManipulator) GenerateBackendUrl(request *http.Request) string {
-	backendBaseUrl := appconfig.AppConfig().BackendBaseUrl()
+	backendBaseUrl := hiconfig.AppConfig().BackendBaseUrl()
 	url := backendBaseUrl + request.URL.RequestURI()
 	return url
 }
 
 func pipeThroughHandler(writer http.ResponseWriter, request *http.Request) {
 	requestmanipulator := DirectRequestManipulator{}
-	pagetemplate := htmx.StartPageGenerator{}
+	pagetemplate := hiview.StartPageGenerator{}
 	proxy := hiproxy.NewRequestObjectProxy(writer, request, requestmanipulator, pagetemplate)
 	proxy.GenericProxyRequest()
 }
@@ -55,7 +55,7 @@ func (manip EditContentPageRequestManipulator) GenerateBackendUrl(request *http.
 
 func PageHandler_EditContent(writer http.ResponseWriter, request *http.Request) {
 	var requestmanipulator hiproxy.RequestManipulator = EditContentPageRequestManipulator{}
-	var pagetemplate hiproxy.ProxyPageGenerator = htmx.EditContentPageGenerator{}
+	var pagetemplate hiproxy.ProxyPageGenerator = hiview.EditContentPageGenerator{}
 	proxy := hiproxy.NewRequestObjectProxy(writer, request, requestmanipulator, pagetemplate)
 	proxy.GenericProxyRequest()
 }
@@ -71,19 +71,19 @@ func (manip ProxyContentPageBodyRequestManipulator) GenerateBackendUrl(request *
 
 func ActionHandler_ProxyContentPageBody(writer http.ResponseWriter, request *http.Request) {
 	requestmanipulator := ProxyContentPageBodyRequestManipulator{}
-	pagetemplate := htmx.ContentPageBodyGenerator{}
+	pagetemplate := hiview.ContentPageBodyGenerator{}
 	proxy := hiproxy.NewRequestObjectProxy(writer, request, requestmanipulator, pagetemplate)
 	proxy.GenericProxyRequest()
 }
 
 func ActionHandler_UpdateContentText(writer http.ResponseWriter, request *http.Request) {
 	newcontent := request.PostFormValue("text")
-	//hugopath := hiproxy.HugikiToHugoUriRule(uriAction_UpdateContent, appconfig.AppConfig().HugoProject()).ConvertAll(request.RequestURI)
-	match := htmx.Filepath_From_UriAction_UpdateContent_Regexp.FindStringSubmatch(request.RequestURI)
+	//hugopath := hiproxy.HugikiToHugoUriRule(uriAction_UpdateContent, hiconfig.AppConfig().HugoProject()).ConvertAll(request.RequestURI)
+	match := hiview.Filepath_From_UriAction_UpdateContent_Regexp.FindStringSubmatch(request.RequestURI)
 	localhugopath := "content/" + match[1] + ".md"
 	hugopath := match[1]
 	himodel.SaveContentMarkdown(hugopath, newcontent)
-	fmt.Fprintln(writer, htmx.Render_EditContentText(newcontent, localhugopath))
+	fmt.Fprintln(writer, hiview.Render_EditContentText(newcontent, localhugopath))
 }
 
 func editAndUpdateHandler(writer http.ResponseWriter, request *http.Request) {

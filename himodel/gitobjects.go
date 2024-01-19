@@ -6,14 +6,14 @@ import (
 	"os/exec"
 	"path/filepath"
 
-	"github.com/sascha-dibbern/Hugiki/appconfig"
+	"github.com/sascha-dibbern/Hugiki/hiconfig"
 )
 
 func runGit(arglist ...string) string {
-	git := appconfig.AppConfig().GitCommand()
+	git := hiconfig.AppConfig().GitCommand()
 
 	cmd := exec.Command(git, arglist...)
-	cmd.Dir = filepath.Clean(appconfig.AppConfig().HugoProject())
+	cmd.Dir = filepath.Clean(hiconfig.AppConfig().HugoProject())
 	var out bytes.Buffer
 	cmd.Stdout = &out
 	err := cmd.Run()
