@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 
-	//	"regexp"
+	"github.com/sascha-dibbern/Hugiki/hiconfig"
 	"github.com/sascha-dibbern/Hugiki/hihandlers"
 )
 
@@ -20,5 +20,5 @@ func StreamToString(stream io.Reader) string {
 func main() {
 	mux := http.NewServeMux()
 	hihandlers.Setup(mux)
-	http.ListenAndServe(":3000", mux)
+	http.ListenAndServe(hiconfig.AppConfig().ServerBinding(), mux)
 }
