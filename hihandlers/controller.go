@@ -10,7 +10,8 @@ import (
 
 func Setup(mux *http.ServeMux) {
 	// Page-handlers
-	mux.HandleFunc(hiuri.UriPage_Root, page.StartPage)
+	mux.HandleFunc(hiuri.UriPage_Root, PipeThroughHandler)
+	mux.HandleFunc(hiuri.UriPage_HugikiRoot, page.StartPage)
 	mux.HandleFunc(hiuri.UriPage_EditContent, page.EditContent)
 
 	// State-page action handlers

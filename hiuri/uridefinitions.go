@@ -1,6 +1,7 @@
 package hiuri
 
 const UriPage_Root = "/"
+const UriPage_HugikiRoot = "/hugiki/"
 const UriPage_Edit = "/hugiki/page/edit/"
 const UriPage_EditContent = UriPage_Edit + "content/"
 const UriPage_Config = "/hugiki/page/config/"

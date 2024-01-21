@@ -16,7 +16,8 @@ type AppConfigType struct {
 }
 
 func assertConfigItemExistence(key string) {
-	if config.String(key) == "" {
+	value := config.String(key)
+	if value == "" {
 		panic("Configuration error: '" + key + "' is empty")
 	}
 }
@@ -36,17 +37,19 @@ func NewAppConfig() AppConfigType {
 
 	config.AddDriver(yaml.Driver)
 
+	// TODO: check file exists
+	configfile := config.String("config")
 	// load config file
-	err = config.LoadFiles(config.String("config"))
+	err = config.LoadFiles(configfile)
 	if err != nil {
 		panic(err)
 	}
 
-	assertConfigItemExistence("hugoProject")
+	assertConfigItemExistence("hugoproject")
 
 	appconfig := AppConfigType{boolmap, stringmap}
 	appconfig.setBool("dev", config.Bool("dev"))
-	appconfig.setString("hugoproject", config.String("hugoproject"), "")
+	appconfig.setString("hugoproject", config.String("hugoproject"), "/")
 	appconfig.setString("backendbaseurl", config.String("backendnaseurl"), "http://localhost:1313/")
 	appconfig.setString("serverbinding", config.String("serverbinding"), "127.0.0.1:3000")
 	appconfig.setString("gitcommand", config.String("gitcommand"), "git")
