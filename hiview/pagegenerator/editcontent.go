@@ -1,4 +1,4 @@
-package hiview
+package pagegenerator
 
 import (
 	"fmt"
@@ -6,12 +6,18 @@ import (
 
 	"github.com/sascha-dibbern/Hugiki/himodel"
 	"github.com/sascha-dibbern/Hugiki/hiproxy"
+	"github.com/sascha-dibbern/Hugiki/hiuri"
+	"github.com/sascha-dibbern/Hugiki/hiview/fragment"
 )
 
-var Filepath_From_UriPage_Edit_Regexp = regexp.MustCompile(UriPage_Edit + "(.+)/")
-var Filepath_From_UriAction_UpdateContent_Regexp = regexp.MustCompile(UriAction_UpdateContent + "(.+)/")
-var UriPage_EditContentRegexp = regexp.MustCompile(UriPage_EditContent)
-var UriAction_ProxyContentPageBodyRegexp = regexp.MustCompile(UriAction_ProxyContentPageBody)
+// Todo: link to it like a popup: https://www.rapidtables.com/web/html/link/html-link-new-window.html
+
+var UriPage_EditContentRegexp = regexp.MustCompile(hiuri.UriPage_EditContent)
+
+var Filepath_From_UriPage_Edit_Regexp = regexp.MustCompile(hiuri.UriPage_Edit + "(.+)/")
+var Filepath_From_UriAction_UpdateContent_Regexp = regexp.MustCompile(hiuri.UriAction_UpdateContent + "(.+)/")
+
+var UriAction_ProxyContentPageBodyRegexp = regexp.MustCompile(hiuri.UriAction_ProxyContentPageBody)
 
 const loadHtmxHtml = `<script src="https://unpkg.com/htmx.org@1.9.10"></script>`
 
@@ -22,16 +28,6 @@ var bodyStartTagRegexp = regexp.MustCompile(bodyStartTagRXPS)
 const bodyEndTagRXPS = "</body>"
 
 var bodyEndTagRegexp = regexp.MustCompile(bodyEndTagRXPS)
-
-/*
- * Should not be called
- */
-type StartPageGenerator struct {
-}
-
-func (generator StartPageGenerator) GenerateHtml(htmlInput string, context *hiproxy.ProxyContext) string {
-	return "<html><head></head><body>Startpage for configuration</body></html>"
-}
 
 /*
  * <body>...</body> -> <body><hugiki>...</hugiki><body>
@@ -49,7 +45,7 @@ type EditContentPageGenerator struct {
 
 func (generator EditContentPageGenerator) pollingUrl(context *hiproxy.ProxyContext) string {
 	request := context.Request
-	proxyContentPageBodyUri := UriPage_EditContentRegexp.ReplaceAllString(request.RequestURI, UriAction_ProxyContentPageBody)
+	proxyContentPageBodyUri := UriPage_EditContentRegexp.ReplaceAllString(request.RequestURI, hiuri.UriAction_ProxyContentPageBody)
 	return proxyContentPageBodyUri
 }
 
@@ -76,7 +72,7 @@ func (generator EditContentPageGenerator) GenerateHtml(htmlInput string, context
 		"</div><!-- Hugiki edit control area --><div>",
 	)
 
-	update_uri := UriAction_UpdateContent + generator.contentPathFragment(context)
+	update_uri := hiuri.UriAction_UpdateContent + generator.contentPathFragment(context)
 	match := Filepath_From_UriPage_Edit_Regexp.FindStringSubmatch(context.Request.RequestURI)
 	filepath := match[1] + ".md"
 	markdown_content := himodel.LoadTextFromFile(filepath)
@@ -87,7 +83,7 @@ func (generator EditContentPageGenerator) GenerateHtml(htmlInput string, context
 		%s
 		</form>
 	</div>
-	`, update_uri, Render_EditContentText(markdown_content, filepath))
+	`, update_uri, fragment.Render_EditContentText(markdown_content, filepath))
 
 	return result + "</div>" + bodyEndTagRXPS
 }

@@ -4,8 +4,6 @@ import (
 	"net/http"
 
 	"github.com/sascha-dibbern/Hugiki/hiconfig"
-	"github.com/sascha-dibbern/Hugiki/hiproxy"
-	"github.com/sascha-dibbern/Hugiki/hiview"
 )
 
 type DirectRequestManipulator struct {
@@ -17,9 +15,11 @@ func (manip DirectRequestManipulator) GenerateBackendUrl(request *http.Request) 
 	return url
 }
 
+/*
 func pipeThroughHandler(writer http.ResponseWriter, request *http.Request) {
 	requestmanipulator := DirectRequestManipulator{}
-	pagetemplate := hiview.StartPageGenerator{}
+	pagetemplate := pagegenerator.StartPageGenerator{}
 	proxy := hiproxy.NewRequestObjectProxy(writer, request, requestmanipulator, pagetemplate)
 	proxy.GenericProxyRequest()
 }
+*/
