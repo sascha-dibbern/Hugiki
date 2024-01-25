@@ -1,34 +1,36 @@
 package pagegenerator
 
 import (
-	"fmt"
+	"net/http"
 
-	"github.com/sascha-dibbern/Hugiki/hiproxy"
+	"github.com/sascha-dibbern/Hugiki/hiview/fragment"
 )
 
-/*
- * Should not be called
- */
-type StartPageGenerator struct {
+var startpagetemplate = `
+{{- define "startpagetemplate" -}}
+<html>
+<head>
+    
+</head>
+<body>
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+<div id="himode">
+    <!-- startpage:startmode -->
+	{{ template "startmode" . }}
+</div>
+</body>
+</html>
+{{- end -}}
+{{- template "startpagetemplate" . -}}
+`
+
+type StartPageView struct {
 }
 
-func (generator StartPageGenerator) GenerateHtml(htmlInput string, context *hiproxy.ProxyContext) string {
-	return "<html><head></head><body>Startpage for configuration</body></html>"
+func NewStartPageView() StartPageView {
+	return StartPageView{}
 }
 
-type EditConfigGenerator struct {
-}
-
-func (generator EditConfigGenerator) GenerateHtml(context *hiproxy.ProxyContext) string {
-	result := fmt.Sprintf(`
-	<html>
-	<head>
-	</head>
-	<body>
-	<h1>Configuration<h1>
-	%s
-	</body>
-	</html>
-	`, "x")
-	return result
+func (generator StartPageView) Render(writer http.ResponseWriter, startstate fragment.StartStruct) {
+	fragment.RenderStartMode(writer, startstate, startpagetemplate)
 }
