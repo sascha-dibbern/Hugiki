@@ -6,5 +6,5 @@ type RootPageGenerator struct {
 }
 
 func (generator RootPageGenerator) GenerateHtml(htmlInput string, context *hiproxy.ProxyContext) string {
-	return "<html><head><meta http-equiv=\"refresh\" content=\"0; url='/hugiki/'\"/></head><body>x</body></html>"
+	return "<html><head><meta http-equiv=\"refresh\" content=\"0; url='/hugiki/'\"/></head><body></body></html>"
 }
