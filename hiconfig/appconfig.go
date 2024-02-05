@@ -2,6 +2,7 @@ package hiconfig
 
 import (
 	"fmt"
+	"path/filepath"
 	"sync"
 
 	"github.com/gookit/config/v2"
@@ -49,7 +50,7 @@ func NewAppConfig() AppConfigType {
 
 	appconfig := AppConfigType{boolmap, stringmap}
 	appconfig.setBool("dev", config.Bool("dev"))
-	appconfig.setString("hugoproject", config.String("hugoproject"), "/")
+	appconfig.setString("hugoproject", filepath.Clean(config.String("hugoproject")), "")
 	appconfig.setString("backendbaseurl", config.String("backendnaseurl"), "http://localhost:1313/")
 	appconfig.setString("serverbinding", config.String("serverbinding"), "127.0.0.1:3000")
 	appconfig.setString("gitcommand", config.String("gitcommand"), "git")
