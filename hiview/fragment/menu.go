@@ -44,11 +44,11 @@ func BuildMenuState(selected string) MenuItems {
 
 var MenuTemplate = `
 {{- define "activemenuitem" -}}
-<td {{ if (ne .Uri "") }} hx-get="{{- .Uri -}}" hx-target="#himode" hx-trigger="click"{{ end }}>{{- .Name -}}</td>
+<td class="hi-menuitem" {{ if (ne .Uri "") }} hx-get="{{- .Uri -}}" hx-target="#himode" hx-trigger="click"{{ end }}>{{- .Name -}}</td>
 {{- end -}}
 {{- define "menu" -}}
 <div>
-<table id="menu"><tr>
+<table class="hi-menu" id="hi-appmenu"><tr>
 {{- range . -}}
 {{ template "activemenuitem" . }}
 {{- end -}}
