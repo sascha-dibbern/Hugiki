@@ -3,6 +3,7 @@ package hihandlers
 import (
 	"net/http"
 
+	"github.com/sascha-dibbern/Hugiki/hiconfig"
 	"github.com/sascha-dibbern/Hugiki/hihandlers/action"
 	"github.com/sascha-dibbern/Hugiki/hihandlers/page"
 	"github.com/sascha-dibbern/Hugiki/hiuri"
@@ -13,6 +14,10 @@ func Setup(mux *http.ServeMux) {
 	mux.HandleFunc(hiuri.UriPage_Root, PipeThroughHandler)
 	mux.HandleFunc(hiuri.UriPage_HugikiRoot, page.StartPage)
 	mux.HandleFunc(hiuri.UriPage_EditContent, page.EditContent)
+	static := hiconfig.AppConfig().HugikiStatic()
+	if static != "" {
+		mux.Handle(hiuri.UriPage_Static, http.FileServer(http.Dir(static)))
+	}
 
 	// State-page action handlers
 	mux.HandleFunc(hiuri.UriAction_ConfigMode, action.ConfigMode)

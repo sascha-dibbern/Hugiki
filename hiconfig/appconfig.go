@@ -50,6 +50,7 @@ func NewAppConfig() AppConfigType {
 
 	appconfig := AppConfigType{boolmap, stringmap}
 	appconfig.setBool("dev", config.Bool("dev"))
+	appconfig.setString("hugikistatic", filepath.Clean(config.String("hugikistatic")), "")
 	appconfig.setString("hugoproject", filepath.Clean(config.String("hugoproject")), "")
 	appconfig.setString("backendbaseurl", config.String("backendnaseurl"), "http://localhost:1313/")
 	appconfig.setString("serverbinding", config.String("serverbinding"), "127.0.0.1:3000")
@@ -92,12 +93,16 @@ func ensureLastSlash(text string) string {
 	return text
 }
 
-func (appconfig AppConfigType) BackendBaseUrl() string {
-	return ensureLastSlash(appconfig.getString("backendbaseurl"))
+func (appconfig AppConfigType) HugikiStatic() string {
+	return appconfig.getString("hugikistatic")
 }
 
 func (appconfig AppConfigType) HugoProject() string {
 	return ensureLastSlash(appconfig.getString("hugoproject"))
+}
+
+func (appconfig AppConfigType) BackendBaseUrl() string {
+	return ensureLastSlash(appconfig.getString("backendbaseurl"))
 }
 
 func (appconfig AppConfigType) ServerBinding() string {

@@ -5,6 +5,7 @@ const UriPage_HugikiRoot = "/hugiki/"
 const UriPage_Edit = "/hugiki/page/edit/"
 const UriPage_EditContent = UriPage_Edit + "content/"
 const UriPage_Config = "/hugiki/page/config/"
+const UriPage_Static = "/hugiki/static/"
 
 // Edit content actions
 const UriAction_ProxyContentPageBody = "/hugiki/action/proxy-content-page-body/"
