@@ -73,3 +73,24 @@ func HugikiUriToHugoUrlRule(hugiki_uri string, hugo_replacement_uri string) hugi
 func (rule hugikiUriToHugoUrlRule) ConvertAll(hugoinput string) string {
 	return rule.definition.Matchingregexp.ReplaceAllString(hugoinput, rule.definition.Replacement)
 }
+
+/**/
+
+type hugikiUriToHugoContentUrlRule struct {
+	prerule    hugikiUriToHugoUrlRule
+	definition hiconverters.TextConversionRuleDefinition
+}
+
+func HugikiUriToHugoContentUrlRule(hugiki_uri string, hugo_replacement_uri string) hugikiUriToHugoContentUrlRule {
+	prerule := HugikiUriToHugoUrlRule(hugiki_uri, hugo_replacement_uri)
+	return hugikiUriToHugoContentUrlRule{
+		prerule:    prerule,
+		definition: hiconverters.NewTextConversionRuleDefinition("\\.md", "/"),
+	}
+}
+
+func (rule hugikiUriToHugoContentUrlRule) ConvertAll(hugoinput string) string {
+	uriprefixreplaced := rule.prerule.ConvertAll(hugoinput)
+	result := rule.definition.Matchingregexp.ReplaceAllString(uriprefixreplaced, rule.definition.Replacement)
+	return result
+}

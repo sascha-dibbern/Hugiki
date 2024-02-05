@@ -15,7 +15,7 @@ type EditContentPageRequestManipulator struct {
 // Transform (Hugiki)"/hugiki/page/edit/content/xyz.." to (Hugo)"/xyz..."
 func (manip EditContentPageRequestManipulator) GenerateBackendUrl(request *http.Request) string {
 	hugikiUri := request.URL.RequestURI()
-	return convertpath.HugikiUriToHugoUrlRule(hiuri.UriPage_EditContent, "/").ConvertAll(hugikiUri)
+	return convertpath.HugikiUriToHugoContentUrlRule(hiuri.UriPage_EditContent, "/").ConvertAll(hugikiUri)
 }
 
 func EditContent(writer http.ResponseWriter, request *http.Request) {

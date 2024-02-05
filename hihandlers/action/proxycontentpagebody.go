@@ -15,7 +15,8 @@ type ProxyContentPageBodyRequestManipulator struct {
 // Transform (Hugiki)"/hugiki/.../xyz.." to (Hugo)"/xyz..."
 func (manip ProxyContentPageBodyRequestManipulator) GenerateBackendUrl(request *http.Request) string {
 	hugikiUri := request.URL.RequestURI()
-	return convertpath.HugikiUriToHugoUrlRule(hiuri.UriAction_ProxyContentPageBody, "/").ConvertAll(hugikiUri)
+	backendurl := convertpath.HugikiUriToHugoContentUrlRule(hiuri.UriAction_ProxyContentPageBody, "/").ConvertAll(hugikiUri)
+	return backendurl
 }
 
 func ProxyContentPageBody(writer http.ResponseWriter, request *http.Request) {

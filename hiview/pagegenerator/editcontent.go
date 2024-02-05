@@ -14,8 +14,8 @@ import (
 
 var UriPage_EditContentRegexp = regexp.MustCompile(hiuri.UriPage_EditContent)
 
-var Filepath_From_UriPage_Edit_Regexp = regexp.MustCompile(hiuri.UriPage_Edit + "(.+)/")
-var Filepath_From_UriAction_UpdateContent_Regexp = regexp.MustCompile(hiuri.UriAction_UpdateContent + "(.+)/")
+var Filepath_From_UriPage_Edit_Regexp = regexp.MustCompile(hiuri.UriPage_Edit + "(.+)")
+var Filepath_From_UriAction_UpdateContent_Regexp = regexp.MustCompile(hiuri.UriAction_UpdateContent + "(.+)")
 
 var UriAction_ProxyContentPageBodyRegexp = regexp.MustCompile(hiuri.UriAction_ProxyContentPageBody)
 
@@ -74,7 +74,7 @@ func (generator EditContentPageGenerator) GenerateHtml(htmlInput string, context
 
 	update_uri := hiuri.UriAction_UpdateContent + generator.contentPathFragment(context)
 	match := Filepath_From_UriPage_Edit_Regexp.FindStringSubmatch(context.Request.RequestURI)
-	filepath := match[1] + ".md"
+	filepath := match[1]
 	markdown_content := himodel.LoadTextFromFile(filepath)
 	result := modifiedcontrolareastring + fmt.Sprintf(`
 	</br>	
