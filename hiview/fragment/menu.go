@@ -5,18 +5,22 @@ import (
 )
 
 const MenuItem_Start string = "Start"
+const MenuItem_Status string = "Status"
 const MenuItem_Navigation string = "Files"
+const MenuItem_Search string = "Search"
 const MenuItem_Git string = "Git"
 const MenuItem_Configuration string = "Configuration"
 const MenuItem_Help string = "Help"
 
-var MenuOrder = [...]string{MenuItem_Start, MenuItem_Navigation, MenuItem_Git, MenuItem_Configuration, MenuItem_Help}
+var MenuOrder = [...]string{MenuItem_Status, MenuItem_Navigation, MenuItem_Search, MenuItem_Git, MenuItem_Configuration, MenuItem_Help}
 
 type MenuItemUri map[string]string
 
 var MenuItemUris = MenuItemUri{
-	MenuItem_Start:         hiuri.UriPage_HugikiRoot,
+	//MenuItem_Start:         hiuri.UriAction_StartMode,
+	MenuItem_Status:        hiuri.UriAction_StatusMode,
 	MenuItem_Navigation:    hiuri.UriAction_NavigationMode,
+	MenuItem_Search:        hiuri.UriAction_SearchMode,
 	MenuItem_Git:           hiuri.UriAction_GitMode,
 	MenuItem_Configuration: hiuri.UriAction_ConfigMode,
 	MenuItem_Help:          hiuri.UriAction_HelpMode,
@@ -24,7 +28,7 @@ var MenuItemUris = MenuItemUri{
 
 type MenuItem map[string]string
 
-type MenuItems [5]MenuItem
+type MenuItems [6]MenuItem
 
 func BuildMenuState(selected string) MenuItems {
 	var menu MenuItems
@@ -44,7 +48,7 @@ func BuildMenuState(selected string) MenuItems {
 
 var MenuTemplate = `
 {{- define "activemenuitem" -}}
-<td class="hi-menuitem" {{ if (ne .Uri "") }} hx-get="{{- .Uri -}}" hx-target="#himode" hx-trigger="click"{{ end }}>{{- .Name -}}</td>
+<td {{ if (ne .Uri "") }} hx-get="{{- .Uri -}}" hx-target="#himode" hx-trigger="click"{{ end }}><div class="hi-menuitem">{{- .Name -}}</div></td>
 {{- end -}}
 {{- define "menu" -}}
 <div>

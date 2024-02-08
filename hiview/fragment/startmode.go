@@ -8,8 +8,6 @@ import (
 var StartModeTemplate = MenuTemplate + `
 {{- define "startmode" -}}
 {{ template "menu" .Menu }}
-<!-- startmode -->
-<h1>Start</h1>
 {{ end}}
 `
 

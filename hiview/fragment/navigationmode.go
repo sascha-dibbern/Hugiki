@@ -7,12 +7,17 @@ import (
 
 var NavigationModeTemplate = MenuTemplate + `
 {{- define "path" -}}
-{{- range .Path -}}
-<span hx-get="{{- .Uri -}}" hx-swap="outerHTML" hx-target="#hi-navigation" class="hi-navigation-pathelement">{{- .Name -}}</span>/
-{{- end -}}
+<div class="hi-navigation-path">
+	<span class="hi-navigation-path-title">Path:&nbsp;</span>
+	{{- range .Path -}}
+	<span hx-get="{{- .Uri -}}" hx-swap="outerHTML" hx-target="#hi-navigation" class="hi-navigation-pathelement">{{- .Name -}}</span>&nbsp;
+	<span class="hi-navigation-pathelement">/</span>&nbsp;
+	{{- end -}}
+</div>
 {{- end -}}
 
 {{- define "dir" -}}
+<div class="hi-navigation-directory-content">
 <table>
 	<tbody>
     	{{- range .Dir -}}
@@ -32,13 +37,14 @@ var NavigationModeTemplate = MenuTemplate + `
     	{{- end -}}
 	</tbody>
 </table>
+</div>
 {{- end -}}
 
 {{- define "navigationmode" -}}
 <div id="hi-navigation">
 	<!-- navigationmode -->
 	{{ template "menu" .Menu }}
-	<h1>Files</h1>
+	<h1 class="hi-title">Files</h1>
 	{{ template "path" . }}
 	</br>
 	{{ template "dir" . }}
