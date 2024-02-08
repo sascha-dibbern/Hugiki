@@ -20,12 +20,18 @@ func Setup(mux *http.ServeMux) {
 	}
 
 	// State-page action handlers
-	mux.HandleFunc(hiuri.UriAction_ConfigMode, action.ConfigMode)
+	mux.HandleFunc(hiuri.UriAction_StartMode, action.StartMode)
+	mux.HandleFunc(hiuri.UriAction_StatusMode, action.StatusMode)
 	mux.HandleFunc(hiuri.UriAction_NavigationMode, action.NavigationMode)
+	mux.HandleFunc(hiuri.UriAction_SearchMode, action.SearchMode)
+	mux.HandleFunc(hiuri.UriAction_ConfigMode, action.ConfigMode)
 	mux.HandleFunc(hiuri.UriAction_GitMode, action.GitMode)
 	mux.HandleFunc(hiuri.UriAction_HelpMode, action.HelpMode)
 
 	// Edit-page action handlers
 	mux.HandleFunc(hiuri.UriAction_ProxyContentPageBody, action.ProxyContentPageBody)
 	mux.HandleFunc(hiuri.UriAction_UpdateContent, action.UpdateContentText)
+
+	// Search-page action handlers
+	mux.HandleFunc(hiuri.UriAction_SearchContent, action.ContentSearchResultAction)
 }

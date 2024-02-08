@@ -8,7 +8,7 @@ import (
 var GitModeTemplate = MenuTemplate + `
 {{- define "gitmode" -}}
 {{ template "menu" .Menu }}<!-- gitmode -->
-<h1>Git</h1>
+<h1 class="hi-title">Git</h1>
 {{ end}}
 {{ template "gitmode" . }}
 `

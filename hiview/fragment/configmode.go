@@ -8,7 +8,7 @@ import (
 var ConfigModeTemplate = MenuTemplate + `
 {{- define "configmode" -}}
 {{ template "menu" .Menu }}<!-- configmode -->
-<h1>Configuration</h1>
+<h1 class="hi-title">Configuration</h1>
 {{ end}}
 {{ template "configmode" . }}
 `

@@ -8,7 +8,7 @@ import (
 var HelpModeTemplate = MenuTemplate + `
 {{- define "helpmode" -}}
 {{ template "menu" .Menu }}<!-- helpmode -->
-<h1>Help</h1>
+<h1 class="hi-title">Help</h1>
 {{ end}}
 {{ template "helpmode" . }}
 `
