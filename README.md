@@ -33,13 +33,15 @@ The word Hugiki derives from
 
 Hugiki is currently in a explorative development / prototype phase, so many thing might change drastically between version uploads
 
-# Features and their state
-Here is a list of features and their state that are currently technical viable to be implemented in a shorter term
+## Features and their state
+Here is a list of features and their state (idea, doing, testing, done)
 
 1. Editing content markdown-files and fast review of result (state: testing)
 1. Hugiki application menu (state: testing)
 1. Hugo project files exploration (state: testing)
-1. Formating of Hugigki output via CSS "cascaded style sheets" (state:todo next)
+1. Formating of Hugigki output via CSS "cascaded style sheets" (state: testing)
+1. Searching of content files (state: testing)
+1. Creation and deletion of content files and directories (state: doing)
 1. Online configuration settings (state: idea)
 1. Basic git integration for managing (state: idea)
 1. Editing other files than the Hugo content-markdown files (state: idea)
@@ -75,6 +77,9 @@ hugoproject: /home/user/projects/demosite
 ### Configurations
 - backendbaseurl: the link url to separate started Hugo webserver
 - hugoproject: the filesystem path to Hugo project to be edited. In Window slash-based path (`C:/projects/demosite1`)  are allowed
+- serverbinding: ip-address and port to bind the service. (Default: 127.0.0.1:3000)
+- gitcommand: name and path og the Git program to use. (Default: git)
+- hugikistatic: filesystem path to Hugiki static content such as CSS file and images
 
 ## Running Hugiki
 
