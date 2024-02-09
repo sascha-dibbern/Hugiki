@@ -219,17 +219,25 @@ func IsMarkdownFile(info fs.FileInfo) bool {
 }
 
 func SearchContentFiles(searchregexp string) []string {
+	var searchresult []string
+	if searchregexp == "" {
+		return searchresult
+	}
+	regexp := regexp.MustCompile(searchregexp)
 	rootpath := filepath.Clean(hiconfig.AppConfig().HugoProject() + "/content")
 	rootpathlen := len(rootpath)
-	var searchresult []string
 	err := filepath.Walk(rootpath, func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
 		if IsMarkdownFile(info) {
 			localpath := path[rootpathlen:]
-			cleanlocalpath := strings.ReplaceAll(localpath, "\\", "/")
-			searchresult = append(searchresult, cleanlocalpath)
+			text := LoadTextFromFile("/content/" + localpath)
+			found := regexp.FindString(text)
+			if found != "" {
+				cleanlocalpath := strings.ReplaceAll(localpath, "\\", "/")
+				searchresult = append(searchresult, cleanlocalpath)
+			}
 		}
 		return nil
 	})
