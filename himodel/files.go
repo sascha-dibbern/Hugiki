@@ -204,3 +204,37 @@ func SaveTextToFile(localpath string, text string) {
 func SaveContentMarkdown(path_under_content string, text string) {
 	SaveTextToFile("content/"+path_under_content, text)
 }
+
+func IsMarkdownFile(info fs.FileInfo) bool {
+	if info.IsDir() {
+		return false
+	}
+	name := info.Name()
+	namelen := len(name)
+	filetype := name[namelen-3 : namelen]
+	if strings.ToLower(filetype) == ".md" {
+		return true
+	}
+	return false
+}
+
+func SearchContentFiles(searchregexp string) []string {
+	rootpath := filepath.Clean(hiconfig.AppConfig().HugoProject() + "/content")
+	rootpathlen := len(rootpath)
+	var searchresult []string
+	err := filepath.Walk(rootpath, func(path string, info fs.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if IsMarkdownFile(info) {
+			localpath := path[rootpathlen:]
+			cleanlocalpath := strings.ReplaceAll(localpath, "\\", "/")
+			searchresult = append(searchresult, cleanlocalpath)
+		}
+		return nil
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	return searchresult
+}
