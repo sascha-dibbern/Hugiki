@@ -212,10 +212,7 @@ func IsMarkdownFile(info fs.FileInfo) bool {
 	name := info.Name()
 	namelen := len(name)
 	filetype := name[namelen-3 : namelen]
-	if strings.ToLower(filetype) == ".md" {
-		return true
-	}
-	return false
+	return strings.ToLower(filetype) == ".md"
 }
 
 func SearchContentFiles(searchregexp string) []string {
